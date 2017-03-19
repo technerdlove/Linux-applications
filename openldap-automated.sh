@@ -6,7 +6,7 @@ sudo su
 
 # Install Git repostitory
 yum -y install git
-git clone https://github.com/nic-instruction/NTI-310.git
+git clone https://github.com/technerdlove/Linux-applications.git
 
 
 #Install LDAP
