@@ -142,7 +142,7 @@ userPassword: {crypt}x
 shadowLastChange: 17058
 shadowMin: 0
 shadowMax: 99999
-shadowWarning: 7 > user-ann.ldif
+shadowWarning: 7" > user-ann.ldif
 
 # Use the ldapadd command with the above file to create a new user called “ann” in OpenLDAP directory.
 # Enter LDAP Password
