@@ -152,7 +152,7 @@ ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" 
 # adding new entry "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 # Assign a password to the user.
-ldappasswd -s password123 -W -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
+ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 # Verify LDAP entries.
 ldapsearch -x cn=ann -b dc=technerdlove,dc=local
