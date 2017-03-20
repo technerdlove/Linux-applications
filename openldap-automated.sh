@@ -8,6 +8,23 @@ sudo su
 yum -y install git
 git clone https://github.com/technerdlove/Linux-applications.git
 
+#////START TO DO
+# Split this script into 2 parts:
+# Part 1: All code above, plus code to make install script executable, e.g. 
+#       chmod 700 /Linux-applications/open-ldap-install-automated.sh
+#       chmod 700 /Linux-applications/enable-ldap-log-automated.sh
+#       chmod 700 /Linux-applications/phpldapadmin-automated.sh
+#         Then, execute the script, e.g. :  
+#             ./open-ldap-install-automated.sh
+#             ( enter code to sleep for 3 seconds)
+#             ./enable-ldap-log-automated.sh
+#             ( enter code to sleep for 3 seconds)
+#             ./phpldapadmin-automated.sh
+# Part 2: All code below, plus code at end to exit so no longer sudo. e.g.: exit
+#       name the new file open-ldap-install-automated.sh
+
+#/// END TO DO
+
 
 #Install LDAP
 yum -y install openldap-servers openldap-clients
