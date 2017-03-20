@@ -168,19 +168,4 @@ echo "firewall-cmd --reload"
 
 
 # STEP I: PHPLDAPAMIN
-# Tell SE linux what's going on, so that it doesn't freek
-setsebool -P httpd_can_connect_ldap on
 
-systemctl enable httpd
-systemctl start httpd
-
-# Configure phpldapadmin.conf
-
-sed -i 's,Require local,#Require local\n    Require all granted,g' /etc/httpd/conf.d/phpldapadmin.conf
-
-cp NTI-310/config/config.php /etc/phpldapadmin/config.php
-chown ldap:apache /etc/phpldapadmin/config.php
-
-systemctl restart httpd.service
-
-echo "phpldapadmin is now up and running"
