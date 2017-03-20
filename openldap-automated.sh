@@ -146,13 +146,13 @@ shadowWarning: 7" > user-ann.ldif
 
 # Use the ldapadd command with the above file to create a new user called “ann” in OpenLDAP directory.
 # Enter LDAP Password
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=ann,dc=technerdlove,dc=local" -f user-ann.ldif
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -f user-ann.ldif
 
 # You should get the following message:
 # adding new entry "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 # Assign a password to the user.
-ldappasswd -s password123 -W -D "cn=Master,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
+ldappasswd -s password123 -W -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 # Verify LDAP entries.
 ldapsearch -x cn=ann -b dc=technerdlove,dc=local
