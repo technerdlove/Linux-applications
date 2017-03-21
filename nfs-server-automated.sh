@@ -4,7 +4,14 @@
 
 # YOU MUST BE ROOT TO EXECUTE
 # sudo su
-# sudo nfs-server-automated.sh
+# sudo bash nfs-server-automated.sh
+
+#///TO DO
+# Create separate script that:
+# pulls down install script from GitHub 
+# changes permission to executable
+# Initiates the script on command line: sudo bash (path to install script)
+#/// END TO DO
 
 # 1. Install the appropriate packages:
 yum -y install nfs-utils libnfsidmap
