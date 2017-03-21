@@ -183,6 +183,11 @@ ldapsearch -x cn=ann -b dc=technerdlove,dc=local
 # Will have to use it later for client install
 
 # Use global variables????
+
+# Note the following from http://www.thegeekstuff.com/2010/05/bash-variables:
+# Global Bash Variables
+# Global variables are also called as environment variables, which will be available to all shells. 
+# printenv command is used to display all the environment variables.
 # ///// END TO DO
 
 # STEP G: Firewall:
