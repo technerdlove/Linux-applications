@@ -178,6 +178,8 @@ ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerd
 # Verify LDAP entries.
 ldapsearch -x cn=ann -b dc=technerdlove,dc=local
 
+ldapsearch -x cn=ann -b dc=technerdlove,dc=local | grep userPassword > (git file)
+
 # ///// TO DO
 # Must capture password givien to user ann.
 # Will have to use it later for client install
