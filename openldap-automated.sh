@@ -26,6 +26,9 @@ git clone https://github.com/technerdlove/Linux-applications.git
 #/// END TO DO
 
 
+# Install net-tools for monitoring that LDAP is installed and functioning
+yum -y install net-tools
+
 #Install LDAP
 yum -y install openldap-servers openldap-clients
 
@@ -39,7 +42,8 @@ systemctl enable slapd.service
 
 # You can manually verify the LDAP.
 # Look for slapd when you enter the following command:
-# netstat -antup | grep -i 389
+echo "If you see slapd in the following, LDAP was installed successfully:"
+netstat -antup | grep -i 389
 
 # STEP B. SETUP LDAP ROOT PASSWORD: 
 # NEED TO ENTER SCRIPT HERE THAT WILL AUTOMATICALLY ASSIGN A PASSWORD
@@ -173,6 +177,13 @@ ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerd
 
 # Verify LDAP entries.
 ldapsearch -x cn=ann -b dc=technerdlove,dc=local
+
+# ///// TO DO
+# Must capture password givien to user ann.
+# Will have to use it later for client install
+
+# Use global variables????
+# ///// END TO DO
 
 # STEP G: Firewall:
 # Open port 389 (tcp 389) in the system's firewall to allow outside connections to the server.
