@@ -11,9 +11,9 @@ git clone https://github.com/technerdlove/Linux-applications.git
 #////START TO DO
 # Split this script into 2 parts:
 # Part 1: All code above, plus code to make install script executable, e.g. 
-#       chmod 700 /Linux-applications/open-ldap-install-automated.sh
-#       chmod 700 /Linux-applications/enable-ldap-log-automated.sh
-#       chmod 700 /Linux-applications/phpldapadmin-automated.sh
+#       chmod -R 777 /Linux-applications/open-ldap-install-automated.sh
+#       chmod -R 777 /Linux-applications/enable-ldap-log-automated.sh
+#       chmod -R 777 /Linux-applications/phpldapadmin-automated.sh
 #         Then, execute the script, e.g. :  
 #             ./open-ldap-install-automated.sh
 #             ( enter code to sleep for 3 seconds)
