@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Here I automate an OpenLDAP install to a CentOS 7 box
 
 # Become root throughout this install
