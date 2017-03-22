@@ -2,7 +2,7 @@
 # Here I automate an OpenLDAP install to a CentOS 7 box
 
 # Become root throughout this install
-sudo su
+# sudo bash openldap-server-automated.sh
 
 #////START TO DO
 # Split this script into 2 parts:
@@ -219,6 +219,7 @@ git commit -m "Populated ipaddress"
 git push -f origin master # -f forces overwrite of existing content in GitHub repo
 # You will have to enter your username and password 
 
+# Remove the Git directory
 cd..
 rm -r Linux-applications-companion
 echo "Git removed"
