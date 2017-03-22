@@ -29,10 +29,8 @@ debconf-get-selections | grep ^ldap
 
 # manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
 
-sed -i -e '$aTLS_REQCERT allow' /etc/ldap/ldap.conf
-sed -i 's,#BASE   dc=example\,dc=com,BASE	dc=technerdlove\,dc=local,g' /etc/ldap/ldap.conf
-sed -i 's,##URI	ldap:\/\/ldap.example.com ldap:\/\/ldap-master.example.com:666,URI	ldaps:\/\/$ipaddress'
-
+# edit /etc/ldap/ldap.conf  to append the values to the end 
+# The BASE and URI values are commented out in the default set up, so easier to append than trying to automate uncommenting and replacing them)
 echo "TLS_REQCERT allow
 BASE   dc=technerdlove,dc=local
 URI    ldaps://$ipaddress:636" >> /etc/ldap/ldap.conf
