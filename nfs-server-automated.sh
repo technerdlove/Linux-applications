@@ -64,10 +64,10 @@ systemctl restart nfs-server
 
 # pull down git repository
 yum -y install git
-git clone https://github.com/technerdlove/Linux-applications.git
+git clone https://github.com/technerdlove/Linux-applications-companion.git
 
 # change to git directory so can execute git commands
-cd Linux-applications
+cd Linux-applications-companion
 
 # Put internal ipaddress into a file in GitHub
 # If a number is already in there, overwrite it. 
@@ -78,3 +78,7 @@ git commit -m "Populated ipaddress"
 git push -f origin master # -f forces overwrite of existing content in GitHub repo
 # You will have to enter your username and password 
 
+# Remove the Git directory
+cd..
+rm -r Linux-applications-companion
+echo "Git removed"
