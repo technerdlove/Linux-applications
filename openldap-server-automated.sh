@@ -220,6 +220,6 @@ git push -f origin master # -f forces overwrite of existing content in GitHub re
 # You will have to enter your username and password 
 
 # Remove the Git directory
-cd..
+cd ..
 rm -r Linux-applications-companion
 echo "Git removed"
