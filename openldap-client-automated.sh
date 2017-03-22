@@ -8,12 +8,13 @@ curl -o /tmp/openldap-server-ip https://raw.githubusercontent.com/technerdlove/L
 ipaddress=$(cat /tmp/openldap-server-ip)
 
 # Get ldap selections from pre-populated file
-curl -o https://raw.githubusercontent.com/technerdlove/Linux-applications-companion/master/ldapselections.txt
+curl -o /tmp/ldap-selections https://raw.githubusercontent.com/technerdlove/Linux-applications-companion/master/ldapselections.txt
+
+ldapselections=$(cat /tmp/ldap-selections)
+
 
 # Install nfs on client (ubuntu machine)
-
 #apt-get -y install nfs-client
-
 export DEBIAN_FRONTEND=noninteractive
 ap-get update
 apt-get --yes install libnss-ldap libpam-ldap ldap-utils nslcd debconf-utils
@@ -24,20 +25,26 @@ do
   curl "$url" >> everywebpage_combined.html
 done < list_of_urls.txt
 
-while read line; do echo "$line" | debconf-set-selections; done < ldapselections.txt
+while read line; do echo "$line" | debconf-set-selections; done < ldapselections
+
+# Then check to make sure your changes made it into debconf: 
+debconf-get-selections | grep ^ldap
 
 
+#############
+#LDAP client configuration to use LDAP Server:
 
-# Mount the nfs files from the nfs server
-showmount -e $ipaddress 
-mkdir /mnt/nfstest 
-# To save us from retyping this after every reboot we add the following line to /etc/fstab:
-echo "$ipaddress:/var/nfsshare/        /mnt/nfstest       nfs     defaults 0 0" >> /etc/fstab
-mount -a
+# STEP 1: Install the necessary LDAP client packages on the client machine.
+yum install -y openldap-clients nss-pam-ldapd
 
-# Check to see if nfs loaded
-mount | grep nfs
+# Execute the below command to add the client machine to LDAP server for single sign on. 
+# Replace “192.168.12.10” with your LDAP server’s IP address or hostname.
+authconfig --enableldap --enableldapauth --ldapserver=$ipaddress --ldapbasedn="dc=technerdlove,dc=local" --enablemkhomedir --update
 
-# Test ability to read and write
-touch /mnt/nfstest/test
-#If no error message, successful
+
+# Restart the LDAP client service.
+systemctl restart  nslcd
+
+# STEP 2: Verify LDAP Login:
+# Use getent command to get the LDAP entries from the LDAP server.
+getent passwd ann
