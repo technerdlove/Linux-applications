@@ -205,3 +205,23 @@ echo "firewall-cmd --reload"
 
 # STEP I: PHPLDAPAMIN
 
+# STEP j: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
+# pull down git repository
+yum -y install git
+git clone https://github.com/technerdlove/Linux-applications.git/openldap-server-ip.txt
+
+# change to git directory so can execute git commands
+cd Linux-applications
+
+# Put internal ipaddress into a file in GitHub
+# If a number is already in there, overwrite it. 
+hostname -i > nfs-server-ip.txt  
+
+git add nfs-server-ip.txt
+git commit -m "Populated ipaddress"
+git push -f origin master # -f forces overwrite of existing content in GitHub repo
+# You will have to enter your username and password 
+
+cd home
+rmdir .git
+echo "Git removed"
