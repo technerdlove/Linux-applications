@@ -3,7 +3,7 @@
 # Here I install nfs on an Ubuntu machine as a client to nfs on a CentOS 7 server
 
 # Get the internal nfs server ip address from a pre-populated file (at the end nfs-server-automated.sh) and place it in /tmp/nfs-server-ip
-curl -o /tmp/nfs-server-ip https://raw.githubusercontent.com/technerdlove/Linux-applications/master/nfs-server-ip.txt
+curl -o /tmp/nfs-server-ip https://raw.githubusercontent.com/technerdlove/Linux-applications-companion/master/nfs-server-ip.txt
 
 # Assign the ip address to a variable named "ipaddress"
 ipaddress=$(cat /tmp/nfs-server-ip)
