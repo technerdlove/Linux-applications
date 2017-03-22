@@ -223,3 +223,14 @@ git push -f origin master # -f forces overwrite of existing content in GitHub re
 cd ..
 rm -r Linux-applications-companion
 echo "Git removed"
+
+
+# STEP K Secure openldap server
+# Example:
+#sed 's/hello/bonjour/' greetings.txt
+# Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
+sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
+
+# Restart slapd
+systemctl restart slapd
+
