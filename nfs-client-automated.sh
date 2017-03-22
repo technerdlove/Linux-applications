@@ -2,6 +2,8 @@
 
 # Here I install nfs on an Ubuntu machine as a client to nfs on a CentOS 7 server
 
+# The nfs server must already be installed using the nfs-server-automated.sh script on a different machine before this script can be run
+
 # Get the internal nfs server ip address from a pre-populated file (at the end nfs-server-automated.sh) and place it in /tmp/nfs-server-ip
 curl -o /tmp/nfs-server-ip https://raw.githubusercontent.com/technerdlove/Linux-applications-companion/master/nfs-server-ip.txt
 
