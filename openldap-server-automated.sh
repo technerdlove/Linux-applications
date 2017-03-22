@@ -229,8 +229,15 @@ echo "Git removed"
 # Example:
 #sed 's/hello/bonjour/' greetings.txt
 # Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
-sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
+# The flag -i.bak creates a backup copy of the original file before sed searched and replaced
+# Keeping backup copy of the originaljust in case the something happens while the script runs and the file gets corrupted.
+sed -i.bak 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
 
 # Restart slapd
 systemctl restart slapd
+
+# Confirm server is listening on port 636
+yum -y install lsof
+lsof -i :636
+# Look for ldap
 
