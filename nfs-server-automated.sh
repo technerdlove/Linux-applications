@@ -70,10 +70,11 @@ git clone https://github.com/technerdlove/Linux-applications.git
 cd Linux-applications
 
 # Put internal ipaddress into a file in GitHub
-hostname -i >> nfs-server-ip.txt  
+# If a number is already in there, overwrite it. 
+hostname -i > nfs-server-ip.txt  
 
 git add nfs-server-ip.txt
 git commit -m "Populated ipaddress"
-git push origin master
+git push -f origin master # -f forces overwrite of existing content in GitHub repo
 # You will have to enter your username and password 
 
