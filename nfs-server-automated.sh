@@ -62,7 +62,8 @@ firewall-cmd --reload
 systemctl restart nfs-server
 
 
-# pull down git repository
+# 6. Save ipaddress of server offset for access by openldap clients
+#    pull down git repository
 yum -y install git
 git clone https://github.com/technerdlove/Linux-applications-companion.git
 
@@ -82,3 +83,16 @@ git push -f origin master # -f forces overwrite of existing content in GitHub re
 cd..
 rm -r Linux-applications-companion
 echo "Git removed"
+
+# 7. Secure openldap server
+# Example:
+#sed 's/hello/bonjour/' greetings.txt
+# Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
+sed -i.bak 's/SLAPD_URLS="ldapi:/// ldap:///"/SLAPD_URLS="ldapi:/// ldap:/// ldaps:///"/' /etc/sysconfig/slapd
+
+# Restart slapd
+systemctl restart slapd
+
+
+
+
