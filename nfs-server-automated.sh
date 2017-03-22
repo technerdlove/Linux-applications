@@ -84,14 +84,7 @@ cd..
 rm -r Linux-applications-companion
 echo "Git removed"
 
-# 7. Secure openldap server
-# Example:
-#sed 's/hello/bonjour/' greetings.txt
-# Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
-sed -i.bak 's/SLAPD_URLS=\"ldapi:/// ldap:///\"/SLAPD_URLS="ldapi:/// ldap:/// ldaps:///\"/' /etc/sysconfig/slapd
 
-# Restart slapd
-systemctl restart slapd
 
 
 
