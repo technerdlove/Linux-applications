@@ -7,9 +7,9 @@ curl -o /tmp/openldap-server-ip https://raw.githubusercontent.com/technerdlove/L
 # Assign the ip address to a variable named "ipaddress"
 ipaddress=$(cat /tmp/openldap-server-ip)
 
-# Get ldap selections from pre-populated file
+# Get ldap selections from pre-populated file and store in /tmp directory under the name ldap-selections
 curl -o /tmp/ldap-selections https://raw.githubusercontent.com/technerdlove/Linux-applications-companion/master/ldapselections.txt
-
+# Assign the ldap selections file to a variable named "ldapselections"
 ldapselections=$(cat /tmp/ldap-selections)
 
 
@@ -19,16 +19,40 @@ export DEBIAN_FRONTEND=noninteractive
 ap-get update
 apt-get --yes install libnss-ldap libpam-ldap ldap-utils nslcd debconf-utils
 unset DEBIAN_FRONTEND
+yum install -y openldap-clients nss-pam-ldapd
 
-while read url
-do
-  curl "$url" >> everywebpage_combined.html
-done < list_of_urls.txt
-
+# Set ldap selections in debconf usine variable ldapselections
 while read line; do echo "$line" | debconf-set-selections; done < ldapselections
 
 # Then check to make sure your changes made it into debconf: 
 debconf-get-selections | grep ^ldap
+
+# manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
+
+sed -i -e '$aTLS_REQCERT allow' /etc/ldap/ldap.conf
+sed -i 's,#BASE   dc=example\,dc=com,BASE	dc=technerdlove\,dc=local,g' /etc/ldap/ldap.conf
+sed -i 's,##URI	ldap:\/\/ldap.example.com ldap:\/\/ldap-master.example.com:666,URI	ldaps:\/\/$ipaddress'
+
+echo "TLS_REQCERT allow
+BASE   dc=technerdlove,dc=local
+URI    ldaps://$ipaddress:636" >> /etc/ldap/ldap.conf
+
+#edit the /etc/nsswitch.conf file - add 'ldap' to these lines
+sed -i 's,passwd:         compat,passwd:         ldap compat,g' /etc/nsswitch.conf
+sed -i 's,group:          compat,group:          ldap compat,g' /etc/nsswitch.conf
+sed -i 's,shadow:         compat,shadow:         ldap compat,g' /etc/nsswitch.conf
+
+
+# To complete your ldap install configuration, you'll need to set values for ldap-auth-config and nslcd
+# ldap-auth-config
+authconfig --enableldap --enableldapauth --ldapserver=$ipaddress --ldapbasedn="dc=technerdlove,dc=local" --enablemkhomedir --update
+# Activate the TLS option
+authconfig --enableldaptls --update 
+
+echo "tls_reqcert allow" >> /etc/nslcd.conf
+
+
+
 
 
 #############
