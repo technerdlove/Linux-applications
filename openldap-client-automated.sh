@@ -22,32 +22,31 @@ unset DEBIAN_FRONTEND
 yum install -y openldap-clients nss-pam-ldapd
 
 # Set ldap selections in debconf usine variable ldapselections
-while read line; do echo "$line" | debconf-set-selections; done < ldapselections
+while read line; do echo "$line" | debconf-set-selections; done < $ldapselections
 
 # Then check to make sure your changes made it into debconf: 
 debconf-get-selections | grep ^ldap
 
-# manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
-
+# Manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
 # edit /etc/ldap/ldap.conf  to append the values to the end 
 # The BASE and URI values are commented out in the default set up, so easier to append than trying to automate uncommenting and replacing them)
-echo "TLS_REQCERT allow
+echo "TLS_REQCERT      allow
 BASE   dc=technerdlove,dc=local
 URI    ldaps://$ipaddress:636" >> /etc/ldap/ldap.conf
 
-#edit the /etc/nsswitch.conf file - add 'ldap' to these lines
+#edit the /etc/nsswitch.conf file by adding "ldap"
 sed -i 's,passwd:         compat,passwd:         ldap compat,g' /etc/nsswitch.conf
 sed -i 's,group:          compat,group:          ldap compat,g' /etc/nsswitch.conf
 sed -i 's,shadow:         compat,shadow:         ldap compat,g' /etc/nsswitch.conf
 
 
-# To complete your ldap install configuration, you'll need to set values for ldap-auth-config and nslcd
-# ldap-auth-config
-authconfig --enableldap --enableldapauth --ldapserver=$ipaddress --ldapbasedn="dc=technerdlove,dc=local" --enablemkhomedir --update
-# Activate the TLS option
-authconfig --enableldaptls --update 
 
+
+# To complete your ldap install configuration, you'll need to set values for ldap-auth-config and nslcd
+# set nslcd
 echo "tls_reqcert allow" >> /etc/nslcd.conf
+
+
 
 
 
