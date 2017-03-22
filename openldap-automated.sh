@@ -4,10 +4,6 @@
 # Become root throughout this install
 sudo su
 
-# Install Git repostitory
-yum -y install git
-git clone https://github.com/technerdlove/Linux-applications.git
-
 #////START TO DO
 # Split this script into 2 parts:
 # Part 1: All code above, plus code to make install script executable, e.g. 
@@ -205,23 +201,24 @@ echo "firewall-cmd --reload"
 
 # STEP I: PHPLDAPAMIN
 
-# STEP j: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
+
+# STEP J: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
 # pull down git repository
 yum -y install git
-git clone https://github.com/technerdlove/Linux-applications.git/openldap-server-ip.txt
+git clone https://github.com/technerdlove/Linux-applications-companion.git
 
 # change to git directory so can execute git commands
-cd Linux-applications
+cd Linux-applications-companion
 
 # Put internal ipaddress into a file in GitHub
 # If a number is already in there, overwrite it. 
-hostname -i > nfs-server-ip.txt  
+hostname -i > openldap-server-ip.txt  
 
-git add nfs-server-ip.txt
+git add openldap-server-ip.txt
 git commit -m "Populated ipaddress"
 git push -f origin master # -f forces overwrite of existing content in GitHub repo
 # You will have to enter your username and password 
 
-cd home
-rmdir .git
+cd..
+rm -r Linux-applications-companion
 echo "Git removed"
