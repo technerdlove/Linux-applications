@@ -23,7 +23,7 @@ unset DEBIAN_FRONTEND
 
 
 # Set ldap selections in debconf usine variable ldapselections
-while read line; do echo "$line" | debconf-set-selections; done < $ldapselections
+while read line; do echo "$line" | debconf-set-selections; done < "$ldapselections"
 
 sleep 3
 
