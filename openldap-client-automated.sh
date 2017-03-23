@@ -108,3 +108,4 @@ systemctl restart  nslcd
 # STEP 2: Verify LDAP Login:
 # Use getent command to get the LDAP entries from the LDAP server.
 getent passwd ann
+######
