@@ -12,6 +12,7 @@ curl -o /tmp/ldap-selections https://raw.githubusercontent.com/technerdlove/Linu
 # Assign the ldap selections file to a variable named "ldapselections"
 ldapselections=$(cat /tmp/ldap-selections)
 
+sleep 3
 
 # Install nfs on client (ubuntu machine)
 #apt-get -y install nfs-client
@@ -24,8 +25,12 @@ unset DEBIAN_FRONTEND
 # Set ldap selections in debconf usine variable ldapselections
 while read line; do echo "$line" | debconf-set-selections; done < ldapselections
 
+sleep 3
+
 # Then check to make sure your changes made it into debconf: 
 debconf-get-selections | grep ^ldap
+
+sleep 3
 
 # Manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
 # edit /etc/ldap/ldap.conf  to append the values to the end 
@@ -50,12 +55,16 @@ echo "tls_reqcert allow" >> /etc/nslcd.conf
 # restart nslcd 
 /etc/init.d/nslcd restart
 
+sleep 3
+
 
 #edit the sudoers file to give access to the admin group in ldap
 #visudo
 
 #comment out this line
 sed -i 's,%admin=(ALL) ALL,#%admin ALL=(ALL) ALL,g' /etc/sudoers    #---use sed command
+
+sleep 3
 
 #adjust the ssh config file for the ubuntu-desktop instance /etc/ssh/sshd_config
 #vi /etc/ssh/sshd_config #---use sed command
