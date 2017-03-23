@@ -16,13 +16,13 @@ ldapselections=$(cat /tmp/ldap-selections)
 # Install nfs on client (ubuntu machine)
 #apt-get -y install nfs-client
 export DEBIAN_FRONTEND=noninteractive
-ap-get update
+apt-get update
 apt-get --yes install libnss-ldap libpam-ldap ldap-utils nslcd debconf-utils
 unset DEBIAN_FRONTEND
-yum install -y openldap-clients nss-pam-ldapd
+
 
 # Set ldap selections in debconf usine variable ldapselections
-while read line; do echo "$line" | debconf-set-selections; done < $ldapselections
+while read line; do echo "$line" | debconf-set-selections; done < ldapselections
 
 # Then check to make sure your changes made it into debconf: 
 debconf-get-selections | grep ^ldap
