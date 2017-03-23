@@ -80,3 +80,4 @@ getent passwd ann
 # Your client should be securly configured now. You can test your configuration using ldapsearch:
 
 ldapsearch  -b "dc=technerdlove,dc=local"  -x -d 1 2>> output.txt
+####
