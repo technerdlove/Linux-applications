@@ -23,7 +23,7 @@ unset DEBIAN_FRONTEND
 
 
 # Set ldap selections in debconf usine variable ldapselections
-while read line; do echo "$line" | debconf-set-selections; done < ldapselections
+while read line; do echo "$line" | debconf-set-selections; done < $ldapselections
 
 sleep 3
 
@@ -53,7 +53,8 @@ echo "session required                        pam_mkhomedir.so skel=/etc/skel um
 echo "tls_reqcert allow" >> /etc/nslcd.conf
 
 # restart nslcd 
-/etc/init.d/nslcd restart
+#/etc/init.d/nslcd restart
+service nslcd restart
 
 sleep 3
 
