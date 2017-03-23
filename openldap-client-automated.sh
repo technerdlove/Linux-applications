@@ -41,11 +41,50 @@ sed -i 's,shadow:         compat,shadow:         ldap compat,g' /etc/nsswitch.co
 
 
 
+echo "session required                        pam_mkhomedir.so skel=/etc/skel umask=077" >> /etc/pam.d/common-session
+
 
 # To complete your ldap install configuration, you'll need to set values for ldap-auth-config and nslcd
 # set nslcd
 echo "tls_reqcert allow" >> /etc/nslcd.conf
 
+# restart nslcd 
+/etc/init.d/nslcd restart
+
+
+#edit the sudoers file to give access to the admin group in ldap
+#visudo
+
+#comment out this line
+sed -i 's,%admin=(ALL) ALL,#%admin ALL=(ALL) ALL,g' /etc/sudoers    #---use sed command
+
+#adjust the ssh config file for the ubuntu-desktop instance /etc/ssh/sshd_config
+#vi /etc/ssh/sshd_config #---use sed command
+#comment out these two lines
+
+#PasswordAuthentication no
+sed -i 's,PasswordAuthentication no,#PasswordAuthentication no,g' /etc/ssh/sshd_config
+#ChallengeResponseAuthentication no
+sed -i 's,ChallengeResponseAuthentication no,#ChallengeResponseAuthentication no,g' /etc/ssh/sshd_config
+
+#restart the sshd service
+systemctl restart sshd.service
+
+#login as ldap user on the ubuntu-desktop!
+#command from terminal: ssh <username>@<ubuntuIPaddress>
+
+
+
+
+
+
+#  Verify LDAP Login:
+# Use getent command to get the LDAP entries from the LDAP server.
+getent passwd ann
+
+# Your client should be securly configured now. You can test your configuration using ldapsearch:
+
+ldapsearch  -b "dc=technerdlove,dc=local"  -x -d 1 2>> output.txt
 
 
 
