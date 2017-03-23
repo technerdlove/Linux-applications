@@ -40,7 +40,6 @@ sed -i 's,group:          compat,group:          ldap compat,g' /etc/nsswitch.co
 sed -i 's,shadow:         compat,shadow:         ldap compat,g' /etc/nsswitch.conf
 
 
-
 echo "session required                        pam_mkhomedir.so skel=/etc/skel umask=077" >> /etc/pam.d/common-session
 
 
@@ -74,10 +73,6 @@ systemctl restart sshd.service
 #command from terminal: ssh <username>@<ubuntuIPaddress>
 
 
-
-
-
-
 #  Verify LDAP Login:
 # Use getent command to get the LDAP entries from the LDAP server.
 getent passwd ann
@@ -85,27 +80,3 @@ getent passwd ann
 # Your client should be securly configured now. You can test your configuration using ldapsearch:
 
 ldapsearch  -b "dc=technerdlove,dc=local"  -x -d 1 2>> output.txt
-
-
-
-
-
-
-#############
-#LDAP client configuration to use LDAP Server:
-
-# STEP 1: Install the necessary LDAP client packages on the client machine.
-yum install -y openldap-clients nss-pam-ldapd
-
-# Execute the below command to add the client machine to LDAP server for single sign on. 
-# Replace “192.168.12.10” with your LDAP server’s IP address or hostname.
-authconfig --enableldap --enableldapauth --ldapserver=$ipaddress --ldapbasedn="dc=technerdlove,dc=local" --enablemkhomedir --update
-
-
-# Restart the LDAP client service.
-systemctl restart  nslcd
-
-# STEP 2: Verify LDAP Login:
-# Use getent command to get the LDAP entries from the LDAP server.
-getent passwd ann
-######
