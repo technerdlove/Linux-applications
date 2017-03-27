@@ -152,7 +152,7 @@ cn: ann
 uid: ann
 uidNumber: 9999
 gidNumber: 100
-homeDirectory: /home/ann
+homeDirectory: /home/users/ann
 loginShell: /bin/bash
 gecos: Ann [Admin (at) technerdlove]
 userPassword: {crypt}x
@@ -181,6 +181,85 @@ ldapsearch -x cn=ann -b dc=technerdlove,dc=local
 # Or, store in temp location (bad idea for prod)
 # ldapsearch -x cn=ann -b dc=technerdlove,dc=local | grep userPassword > (git file)
 # ///// END TO DO
+
+
+#Your username and an encrypted password
+
+#  Create a test user
+
+echo "dn: uid=testuser,ou=People,dc=technerdlove,dc=local
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: testuser
+uid: testuser
+uidNumber: 9998
+gidNumber: 100
+homeDirectory: /home/users/testuser
+loginShell: /bin/bash
+gecos: test user account
+userPassword: {crypt}x
+shadowLastChange: 17058
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7" > user-testuser.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  user-testuser.ldif
+
+# Assign a password to the user.
+ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=testuser,ou=People,dc=technerdlove,dc=local"
+
+
+# STEP F1: Create An organization
+echo "dn: dc=technerdlove, dc=local
+dc: technerdlove
+o: Tech Nerd Love
+objectclass: organization
+objectclass: dcObject" >> organization.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  organization.ldif
+
+sleep 3
+
+# STEP F2: Create Two Groups
+# Entry 1: 
+echo "dn: cn=admins,ou=group,dc=technerdlove,dc=local
+cn: admins
+gidnumber: 500
+objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
+objectclass: top" >> /etc/openldap/slapd.d/group-admins.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  group-admins.ldif
+
+sleep 3
+
+# Entry 2: 
+echo "dn: cn=testers,ou=group,dc=technerdlove,dc=local
+cn: testers
+gidnumber: 501
+objectclass: posixGroup
+objectclass: top" >> /etc/openldap/slapd.d/group-testers.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  group-testers.ldif
+
+
+echo "dn: cn=admins,ou=group,dc=technerdlove,dc=local
+changetype: modify
+add: memberuid
+memberuid: ann
+
+dn: cn=admins,ou=group,dc=technerdlove,dc=local
+changetype: modify
+add: memberuid
+memberuid: testuser
+
+dn: cn=testers,ou=group,dc=technerdlove,dc=local
+changetype: modify
+add: memberuid
+memberuid: testuser" >> add-userstogroups.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  add-userstogroups.ldif
 
 # STEP G: Firewall:
 # Open port 389 (tcp 389) in the system's firewall to allow outside connections to the server.
@@ -238,11 +317,27 @@ EOT
 #edit /etc/sysconfig/slapd
 sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
 
+
+# Set config file
+echo "Setting login to fqdn..."
+cp -f /tmp/Linux-applications/config.php /etc/phpldapadmin/config.php
+
+#allow login from the web
+echo "Making ldap htdocs accessible from the web..."
+cp -f /tmp/Linux-applications/phpldapadmin.conf /etc/httpd/conf.d/phpldapadmin.conf
+
 #restart slapd
 systemctl restart slapd
 
 #restart the httpd service
 systemctl restart httpd
+
+#configure firewall to allow access
+echo "Configuring the built-in firewall to allow access..."
+firewall-cmd --permanent --add-port=636/tcp
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --reload
+
 
 
 # STEP J: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
@@ -284,3 +379,6 @@ yum -y install lsof
 lsof -i :636
 # Look for ldap
 
+# You're done.  Here is the url for phpldapadmin
+ipaddr=$(hostname -i)
+echo "ldap configuration complete. Point your browser to http://$ipaddr/phpldapadmin to login..."
