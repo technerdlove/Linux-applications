@@ -257,9 +257,10 @@ memberuid: testuser
 dn: cn=testers,ou=group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
-memberuid: testuser" >> add-userstogroups.ldif
+memberuid: testuser" >> add-defaultuserstogroups.ldif
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  add-userstogroups.ldif
+
+ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  add-defaultuserstogroups.ldif
 
 # STEP G: Firewall:
 # Open port 389 (tcp 389) in the system's firewall to allow outside connections to the server.
