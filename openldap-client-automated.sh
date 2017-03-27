@@ -16,9 +16,10 @@ sleep 3
 
 # Install nfs on client (ubuntu machine)
 #apt-get -y install nfs-client
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get --yes install libnss-ldap libpam-ldap ldap-utils nslcd debconf-utils
+export DEBIAN_FRONTEND=noninteractive #this line allows you to skip the autoconfig
+#update and upgrade ubuntu, to ensure that the ldap install is successful
+apt-get --yes update && apt-get --yes upgrade && apt-get --yes dist-upgrade && apt-get --yes autoremove # apt-get --yes autoremove removes dependencies that were installed with applications and that are no longer used by anything else on the system.
+apt-get --yes install libnss-ldap libpam-ldap ldap-utils nslcd debconf-utils #nslcd is a daemon that will do LDAP queries for local processes based on a simple configuration file
 unset DEBIAN_FRONTEND
 
 
@@ -32,6 +33,7 @@ debconf-get-selections | grep ^ldap
 
 sleep 3
 
+#FOR CERTIFICATE
 # Manually configure files not managed by debconf: /etc/nsswitch.conf and /etc/ldap/ldap.conf
 # edit /etc/ldap/ldap.conf  to append the values to the end 
 # The BASE and URI values are commented out in the default set up, so easier to append than trying to automate uncommenting and replacing them)
@@ -47,7 +49,7 @@ sed -i 's,shadow:         compat,shadow:         ldap compat,g' /etc/nsswitch.co
 
 echo "session required                        pam_mkhomedir.so skel=/etc/skel umask=077" >> /etc/pam.d/common-session
 
-
+#FOR CERTIFICATE
 # To complete your ldap install configuration, you'll need to set values for ldap-auth-config and nslcd
 # set nslcd
 echo "tls_reqcert allow" >> /etc/nslcd.conf
@@ -63,14 +65,15 @@ sleep 3
 #visudo
 
 #comment out this line
-sed -i 's,%admin=(ALL) ALL,#%admin ALL=(ALL) ALL,g' /etc/sudoers    #---use sed command
+#sed -i 's,%admin=(ALL) ALL,#%admin ALL=(ALL) ALL,g' /etc/sudoers    #---use sed command
 
-sleep 3
+#sleep 3
 
 #adjust the ssh config file for the ubuntu-desktop instance /etc/ssh/sshd_config
 #vi /etc/ssh/sshd_config #---use sed command
 #comment out these two lines
 
+#FOR CERTIFICATE
 #PasswordAuthentication no
 sed -i 's,PasswordAuthentication no,#PasswordAuthentication no,g' /etc/ssh/sshd_config
 #ChallengeResponseAuthentication no
