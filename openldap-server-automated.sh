@@ -122,7 +122,7 @@ dc: technerdlove
 objectClass: top
 objectClass: domain
 
-dn: cn=Manager ,dc=technerdlove,dc=local
+dn: cn=Manager,dc=technerdlove,dc=local
 objectClass: organizationalRole
 cn: Manager
 description: LDAP Manager
@@ -192,7 +192,7 @@ objectClass: top
 objectClass: account
 objectClass: posixAccount
 objectClass: shadowAccount
-cn: testuser
+cn: Testuser
 uid: testuser
 uidNumber: 9998
 gidNumber: 100
@@ -224,7 +224,7 @@ sleep 3
 
 # STEP F2: Create Two Groups
 # Entry 1: 
-echo "dn: cn=admins,ou=group,dc=technerdlove,dc=local
+echo "dn: cn=admins,ou=Group,dc=technerdlove,dc=local
 cn: admins
 gidnumber: 500
 objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
@@ -235,7 +235,7 @@ ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local
 sleep 3
 
 # Entry 2: 
-echo "dn: cn=testers,ou=group,dc=technerdlove,dc=local
+echo "dn: cn=testers,ou=Group,dc=technerdlove,dc=local
 cn: testers
 gidnumber: 501
 objectclass: posixGroup
@@ -244,17 +244,17 @@ objectclass: top" >> /etc/openldap/slapd.d/group-testers.ldif
 ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  group-testers.ldif
 
 
-echo "dn: cn=admins,ou=group,dc=technerdlove,dc=local
+echo "dn: cn=admins,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
 memberuid: ann
 
-dn: cn=admins,ou=group,dc=technerdlove,dc=local
+dn: cn=admins,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
 memberuid: testuser
 
-dn: cn=testers,ou=group,dc=technerdlove,dc=local
+dn: cn=testers,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
 memberuid: testuser" >> add-defaultuserstogroups.ldif
@@ -316,11 +316,31 @@ SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
 EOT
 
 #edit /etc/sysconfig/slapd
-sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
+#sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
 
+
+# STEP I-1  Secure openldap server
+# Example:
+#sed 's/hello/bonjour/' greetings.txt
+# Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
+# The flag -i.bak creates a backup copy of the original file before sed searched and replaced
+# Keeping backup copy of the originaljust in case the something happens while the script runs and the file gets corrupted.
+sed -i.bak 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
+
+# Restart slapd
+systemctl restart slapd
+
+# Confirm server is listening on port 636
+yum -y install lsof
+lsof -i :636
+# Look for ldap
+
+# You're done.  Here is the url for phpldapadmin
+ipaddr=$(hostname -i)
+echo "ldap configuration complete. Point your browser to http://$ipaddr/phpldapadmin to login..."
 
 # Set config file
-echo "Setting login to fqdn..."
+echo "Setting login to fully qualified domain name (fqdn)..."
 cp -f /tmp/Linux-applications/config.php /etc/phpldapadmin/config.php
 
 #allow login from the web
@@ -362,24 +382,3 @@ git push -f origin master # -f forces overwrite of existing content in GitHub re
 cd ..
 rm -r Linux-applications-companion
 echo "Git removed"
-
-
-# STEP K Secure openldap server
-# Example:
-#sed 's/hello/bonjour/' greetings.txt
-# Search for SLAPD_URLS="ldapi:/// ldap:///"  and replace with SLAPD_URLS="ldapi:/// ldap:/// ldaps:///" in /etc/sysconfig/slapd
-# The flag -i.bak creates a backup copy of the original file before sed searched and replaced
-# Keeping backup copy of the originaljust in case the something happens while the script runs and the file gets corrupted.
-sed -i.bak 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
-
-# Restart slapd
-systemctl restart slapd
-
-# Confirm server is listening on port 636
-yum -y install lsof
-lsof -i :636
-# Look for ldap
-
-# You're done.  Here is the url for phpldapadmin
-ipaddr=$(hostname -i)
-echo "ldap configuration complete. Point your browser to http://$ipaddr/phpldapadmin to login..."
