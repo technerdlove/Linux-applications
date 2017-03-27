@@ -194,6 +194,56 @@ echo "firewall-cmd --reload"
 
 # STEP I: PHPLDAPAMIN
 
+# Must create a ssl cert for apache to use with phpldapadmin
+#create apache-selfsigned cert
+yum -y install mod_ssl
+
+mkdir /etc/ssl/private
+chmod 700 /etc/ssl/private
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -subj "/C=US/ST=WA/L=Seattle/O=IT/OU=IT/CN=technerdlove.local" -out /etc/ssl/certs/apache-selfsigned.crt
+openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+cat /etc/ssl/certs/dhparam.pem | tee -a /etc/ssl/certs/apache-selfsigned.crt
+
+#modify /etc/httpd/conf.d/ssl.conf
+sed  -i '/<VirtualHost _default_:443>/a Alias \/phpldapadmin \/usr\/share\/phpldapadmin\/htdocs' /etc/httpd/conf.d/ssl.conf
+sed  -i '/Alias \/phpldapadmin \/usr\/share\/phpldapadmin\/htdocs/a Alias \/ldapadmin \/usr\/share\/phpldapadmin\/htdocs' /etc/httpd/conf.d/ssl.conf
+sed  -i '/Alias \/ldapadmin \/usr\/share\/phpldapadmin\/htdocs/a DocumentRoot \"\/usr\/share\/phpldapadmin\/htdocs\"' /etc/httpd/conf.d/ssl.conf
+sed  -i '/DocumentRoot \"\/usr\/share\/phpldapadmin\/htdocs\"/a ServerName technerdlove.local:443' /etc/httpd/conf.d/ssl.conf
+
+#update cypher suite
+sed -i "s/SSLProtocol all -SSLv2/#SSLProtocol all -SSLv2/g" /etc/httpd/conf.d/ssl.conf
+sed -i "s/SSLCipherSuite HIGH:MEDIUM:\!aNULL:\!MD5:\!SEED:\!IDEA/#SSLCipherSuite HIGH:MEDIUM:\!aNULL:\!MD5:\!SEED:\!IDEA/g" /etc/httpd/conf.d/ssl.conf
+
+cat <<EOT>> /etc/httpd/conf.d/ssl.conf
+# Begin copied text
+# from https://cipherli.st/
+# and https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html
+SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+SSLProtocol All -SSLv2 -SSLv3
+SSLHonorCipherOrder On
+# Disable preloading HSTS for now.  You can use the commented out header line that includes
+# the "preload" directive if you understand the implications.
+#Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains"
+Header always set X-Frame-Options DENY
+Header always set X-Content-Type-Options nosniff
+# Requires Apache >= 2.4
+SSLCompression off
+SSLUseStapling on
+SSLStaplingCache "shmcb:logs/stapling-cache(150000)"
+# Requires Apache >= 2.4.11
+# SSLSessionTickets Off
+EOT
+
+#edit /etc/sysconfig/slapd
+sed -i 's/SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"/SLAPD_URLS=\"ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"/g' /etc/sysconfig/slapd
+
+#restart slapd
+systemctl restart slapd
+
+#restart the httpd service
+systemctl restart httpd
+
 
 # STEP J: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
 # pull down git repository
