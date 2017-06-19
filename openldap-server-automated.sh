@@ -488,7 +488,7 @@ cp -f /tmp/Linux-applications/config.php /etc/phpldapadmin/config.php
 
 #           allow login from the web
 echo "Making ldap htdocs accessible from the web..."
-cp -f /tmp/Linux-applications/phpldapadmin.conf /etc/httpd/conf.d/phpldapadmin.conf
+cp -f /tmp/Linux-applications/config.php /etc/httpd/conf.d/config.php
 
 #           restart slapd
 systemctl restart slapd
