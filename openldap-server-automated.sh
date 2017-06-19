@@ -195,7 +195,7 @@ ou: Group" >> /etc/openldap/slapd.d/base.ldif
 
 #           Build the directory structure.
 #           ldapadd command will prompt you for the password of Manager (LDAP root user).
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/base.ldif
+ldapadd -x -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/base.ldif -y /root/ldap_admin_pass
 
 
 # 2-A-v. Create LDAP users:
@@ -225,7 +225,7 @@ userPassword: $newhashann" >> /etc/openldap/slapd.d/user-ann.ldif
 
 #          Use the ldapadd command with the above file to create a new user called “ann” in OpenLDAP directory.
 #          Enter LDAP Password
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/user-ann.ldif
+ldapadd -x -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/user-ann.ldif -y /root/ldap_admin_pass
 
 #          You should get the following message:
 #          adding new entry "uid=ann,ou=People,dc=technerdlove,dc=local"
@@ -275,7 +275,7 @@ homeDirectory: /home/users/testuser
 loginShell: /bin/bash
 userPassword: $newhashtest" >> /etc/openldap/slapd.d/user-testuser.ldif
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif -y /root/ldap_admin_pass 
 
 sleep 3
 
@@ -292,7 +292,7 @@ o: Tech Nerd Love
 objectclass: organization
 objectclass: dcObject" >> /etc/openldap/slapd.d/organization.ldif
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/organization.ldif
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/organization.ldif -y /root/ldap_admin_pass
 
 sleep 3
 
@@ -306,7 +306,7 @@ gidnumber: 500
 objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
 objectclass: top" >> /etc/openldap/slapd.d/group-admins.ldif
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif -y /root/ldap_admin_pass
 
 sleep 3
 
@@ -318,7 +318,7 @@ gidnumber: 501
 objectclass: posixGroup
 objectclass: top" >> /etc/openldap/slapd.d/group-testers.ldif
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif -y /root/ldap_admin_pass
 
 sleep 3
 
@@ -341,7 +341,7 @@ add: memberuid
 memberuid: testuser" >> /etc/openldap/slapd.d/add-defaultuserstogroups.ldif
 
 
-ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/add-defaultuserstogroups.ldif
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/add-defaultuserstogroups.ldif -y /root/ldap_admin_pass
 
 sleep 3
 
@@ -504,6 +504,7 @@ firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --reload
 
 # Check who is listening on port 636
+echo "Check who is listening on port 636...is it http?"
 netstat -antup | grep 636
 
 sleep 5
