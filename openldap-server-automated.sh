@@ -120,7 +120,7 @@ replace: olcAccess
 olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' >> /etc/openldap/slapd.d/config.ldif
 
 #         Send the configuration to the LDAP server.
-ldapmodify -Y EXTERNAL -H ldapi:/// -f config.ldif
+ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/slapd.d/config.ldif
 
 #2-A-iii: Create OpenLDAP certificate
 echo "Create LDAP certificate and keyout..."
@@ -185,7 +185,7 @@ ou: People
 
 dn: ou=Group,dc=technerdlove,dc=local
 objectClass: organizationalUnit
-ou: Group" > base.ldif
+ou: Group" >> /etc/openldap/slapd.d/base.ldif
 
 #           Build the directory structure.
 #           ldapadd command will prompt you for the password of Manager (LDAP root user).
@@ -193,6 +193,13 @@ ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" 
 
 
 # 2-A-v. Create LDAP users:
+echo "generate new hashed password for ldap user ann and store it on the server..."
+#       generate and securely store a new pw.
+newsecretann=$(slappasswd -g)
+newhashann=$(slappasswd -s "$newsecretann")
+echo -n "$newsecretann" > /root/ldap_user_pass_ann
+chmod 0600 /root/ldap_user_pass_ann
+
 echo "Creating LDAP user ann and user-ann.ldif..."
 #        Call user-ann.ldif
 
@@ -209,7 +216,7 @@ gidNumber: 500
 homeDirectory: /home/users/ann
 loginShell: /bin/bash
 # gecos: Ann [Admin (at) technerdlove]  
-userPassword: {crypt}x" > /etc/openldap/slapd.d/user-ann.ldif
+userPassword: $newhashann" >> /etc/openldap/slapd.d/user-ann.ldif
 
 #          Use the ldapadd command with the above file to create a new user called “ann” in OpenLDAP directory.
 #          Enter LDAP Password
@@ -219,9 +226,9 @@ ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" 
 #          adding new entry "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 #          Assign a password to the user.
-echo "Assigning password to the user..."
+#echo "Assigning password to the user..."
 
-ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
+#ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=ann,ou=People,dc=technerdlove,dc=local"
 
 sleep 3
 
@@ -241,6 +248,14 @@ ldapsearch -x cn=ann -b dc=technerdlove,dc=local
 #           Your username and an encrypted password
 
 #           Create a test user
+echo "generate new hashed password for ldap user ann and store it on the server..."
+#       generate and securely store a new pw.
+newsecrettest=$(slappasswd -g)
+newhashtest=$(slappasswd -s "$newsecrettest")
+echo -n "$newsecrettest" > /root/ldap_user_pass_test
+chmod 0600 /root/ldap_user_pass_test
+
+
 echo "Creating LDAP user testuser and user-testuser.ldif..."
 
 echo "dn: uid=testuser,ou=People,dc=technerdlove,dc=local
@@ -255,14 +270,14 @@ gidNumber: 501
 homeDirectory: /home/users/testuser
 loginShell: /bin/bash
 # gecos: test user account
-userPassword: {crypt}x" > user-testuser.ldif
+userPassword: $newhashtest" >> user-testuser.ldif
 
 ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif
 
 sleep 3
 
 #             Assign a password to the user.
-ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=testuser,ou=People,dc=technerdlove,dc=local"
+#ldappasswd -s password123 -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -x "uid=testuser,ou=People,dc=technerdlove,dc=local"
 
 
 # 2-A-vi: Create An organization
@@ -361,7 +376,7 @@ firewall-cmd --reload
 
 
 # 2-A-ix. Enable LDAP logging:
-echo "Enabling LDAP logging.."
+echo "Enabling LDAP logging..."
 #         Call enable-ldap-log
 #         Configure Rsyslog to log LDAP events to log file /var/log/ldap.log.
 #         FYI:  Ryslog is the default logging program on Debian and Red-Hat based systems.
@@ -395,7 +410,7 @@ systemctl restart rsyslog.service
 sleep 3
 
 #         Check that rsyslog is up and running
-echo "Check to see the rsyslog is up and running"
+echo "Check to see the rsyslog is up and running..."
 systemctl status rsyslog
 
 sleep 5
@@ -485,9 +500,13 @@ firewall-cmd --permanent --add-port=636/tcp
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --reload
 
-#           You're done with phpldapadmin configurations.  Here is the url for phpldapadmin
-ipaddr=$(hostname -i)
-echo "ldap configuration complete. Point your browser to http://$ipaddr/phpldapadmin to login..."
+#           You're done with phpldapadmin configurations.  Here is the external url for phpldapadmin
+#           Note the specific command to get the external ip address is for instances hosted in Google Cloud only
+
+extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/net
+es/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
+
+echo "ldap configuration complete. Point your browser to http://$extipaddr/phpldapadmin to login..."
 
 sleep 5
 
@@ -496,7 +515,7 @@ sleep 5
 # (FOR TESTING ONLY) STEP 3: STORE OPENLDAP SERVER INTERNAL IP ADDRESS FOR USE BY LDAP CLIENT
 ##################################################################################
 
-echo "STEP 3:  We store ldap server ip address for use by ldap client"
+echo "STEP 3:  We store ldap server ip address for use by ldap client..."
 #         pull down git repository
 #yum -y install git
 git clone https://github.com/technerdlove/Linux-applications-companion.git
@@ -525,5 +544,7 @@ echo "Git removed"
 # YOU'RE DONE!
 #########################################
 #           You're done.  Here is the url for phpldapadmin
-ipaddr=$(hostname -i)
-echo "ldap configuration complete. Point your browser to http://$ipaddr/phpldapadmin to login..."
+extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/net
+es/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
+
+echo "ldap configuration complete. Point your browser to http://$extipaddr/phpldapadmin to login..."
