@@ -7,6 +7,7 @@
 # 1) Git repo with phpldapadmin config file is already installed on server
 # 2) You have become root throughout this install.  (You need to be root to execute these commands.)
      # sudo bash openldap-server-automated.sh
+# 3) Google Cloud instance with access to Google Cloud APIs (External ip address command is specific to Google Cloud).
 
 
 ################################################
