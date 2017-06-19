@@ -498,8 +498,10 @@ sleep 5
 
 echo "STEP 3:  We store ldap server ip address for use by ldap client"
 #         pull down git repository
-yum -y install git
+#yum -y install git
 git clone https://github.com/technerdlove/Linux-applications-companion.git
+git config --global user.name "technerdlove"
+git config --global user.email "technerdlove@gmail.com"
 
 #         change to git directory so can execute git commands
 cd Linux-applications-companion
