@@ -88,13 +88,14 @@ echo "generate new hashed password for ldap root user and store it on the server
 newsecret=$(slappasswd -g)
 newhash=$(slappasswd -s "$newsecret")
 echo -n "$newsecret" > /root/ldap_admin_pass
-chmod 0600 /root/ldap_admin_pass
+chmod 600 /root/ldap_admin_pass
 
 # 2-A-ii. Configure OpenLDAP server and store in config.ldif
 #         Reference config.ldif
 #         Here I create config.ldif
 echo "Configuring ldap server and creating config.ldif..."
 #         Code note:  Using double quotes in echo statement because of $newhash variable
+
 echo "dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 replace: olcSuffix
@@ -108,9 +109,12 @@ olcRootDN: cn=Manager,dc=technerdlove,dc=local
 dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 replace: olcRootPW
-olcRootPW: $newhash" >> /etc/openldap/slapd.d/config.ldif
+olcRootPW: $newhash" > /etc/openldap/slapd.d/config.ldif
 
-echo "restricting ladap database authorization..."
+#      Set the owner and group permissions to ldap.
+chown -R ldap:ldap /etc/openldap/slapd.d/config.ldif
+
+echo "restricting ldap database authorization..."
 #          Code note:  Notice that you use single quotes for the echo statement here.
 #                This is because there are double quotes in the commands contained in the echo statement
 #                i.e. olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,...
@@ -118,7 +122,7 @@ echo "restricting ladap database authorization..."
 echo 'dn: olcDatabase={1}monitor,cn=config
 changetype: modify
 replace: olcAccess
-olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' >> /etc/openldap/slapd.d/config.ldif
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
 
 #         Send the configuration to the LDAP server.
 ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/slapd.d/config.ldif
@@ -188,6 +192,7 @@ dn: ou=Group,dc=technerdlove,dc=local
 objectClass: organizationalUnit
 ou: Group" >> /etc/openldap/slapd.d/base.ldif
 
+
 #           Build the directory structure.
 #           ldapadd command will prompt you for the password of Manager (LDAP root user).
 ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/base.ldif
@@ -199,7 +204,7 @@ echo "generate new hashed password for ldap user ann and store it on the server.
 newsecretann=$(slappasswd -g)
 newhashann=$(slappasswd -s "$newsecretann")
 echo -n "$newsecretann" > /root/ldap_user_pass_ann
-chmod 0600 /root/ldap_user_pass_ann
+chmod 600 /root/ldap_user_pass_ann
 
 echo "Creating LDAP user ann and user-ann.ldif..."
 #        Call user-ann.ldif
@@ -209,15 +214,14 @@ echo "dn: uid=ann,ou=People,dc=technerdlove,dc=local
 objectClass: top
 objectClass: posixAccount
 objectclass: inetOrgPerson
-# objectClass: shadowAccount  is NOT currently supported by Fedora
 cn: anntechnerd
 uid: ann
 uidNumber: 9999
 gidNumber: 500
 homeDirectory: /home/users/ann
-loginShell: /bin/bash
-# gecos: Ann [Admin (at) technerdlove]  
+loginShell: /bin/bash 
 userPassword: $newhashann" >> /etc/openldap/slapd.d/user-ann.ldif
+
 
 #          Use the ldapadd command with the above file to create a new user called “ann” in OpenLDAP directory.
 #          Enter LDAP Password
@@ -249,12 +253,12 @@ ldapsearch -x cn=ann -b dc=technerdlove,dc=local
 #           Your username and an encrypted password
 
 #           Create a test user
-echo "generate new hashed password for ldap user ann and store it on the server..."
+echo "generate new hashed password for ldap user test and store it on the server..."
 #       generate and securely store a new pw.
 newsecrettest=$(slappasswd -g)
 newhashtest=$(slappasswd -s "$newsecrettest")
 echo -n "$newsecrettest" > /root/ldap_user_pass_test
-chmod 0600 /root/ldap_user_pass_test
+chmod 600 /root/ldap_user_pass_test
 
 
 echo "Creating LDAP user testuser and user-testuser.ldif..."
@@ -263,15 +267,13 @@ echo "dn: uid=testuser,ou=People,dc=technerdlove,dc=local
 objectClass: top
 objectClass: posixAccount
 objectclass: inetOrgPerson
-# objectClass: shadowAccount  is NOT currently supported by Fedora
 cn: Testuser
 uid: testuser
 uidNumber: 9998
 gidNumber: 501
 homeDirectory: /home/users/testuser
 loginShell: /bin/bash
-# gecos: test user account
-userPassword: $newhashtest" >> user-testuser.ldif
+userPassword: $newhashtest" >> /etc/openldap/slapd.d/user-testuser.ldif
 
 ldapadd -x -W -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif
 
@@ -501,8 +503,13 @@ firewall-cmd --permanent --add-port=636/tcp
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --reload
 
+# Check who is listening on port 636
+netstat -antup | grep 636
+
+sleep 5
+
 #           You're done with phpldapadmin configurations.  Here is the external url for phpldapadmin
-#           Note the specific command to get the external ip address is for instances hosted in Google Cloud only
+#           Note that the specific command to get the external ip address is for instances hosted in Google Cloud only
 
 extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
 
