@@ -504,8 +504,7 @@ firewall-cmd --reload
 #           You're done with phpldapadmin configurations.  Here is the external url for phpldapadmin
 #           Note the specific command to get the external ip address is for instances hosted in Google Cloud only
 
-extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/net
-es/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
+extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
 
 echo "ldap configuration complete. Point your browser to http://$extipaddr/phpldapadmin to login..."
 
@@ -545,7 +544,6 @@ echo "Git removed"
 # YOU'RE DONE!
 #########################################
 #           You're done.  Here is the url for phpldapadmin
-extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/net
-es/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
+extipaddr=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip" -H "Metadata-Flavor: Google")
 
 echo "ldap configuration complete. Point your browser to http://$extipaddr/phpldapadmin to login..."
