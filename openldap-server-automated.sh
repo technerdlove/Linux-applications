@@ -194,7 +194,8 @@ ou: People
 
 dn: ou=Group,dc=technerdlove,dc=local
 objectClass: organizationalUnit
-ou: Group" >> /etc/openldap/slapd.d/base.ldif
+ou: Group
+" >> /etc/openldap/slapd.d/base.ldif
 
 sleep 3
 
@@ -232,7 +233,8 @@ uidNumber: 9999
 gidNumber: 500
 homeDirectory: /home/users/ann
 loginShell: /bin/bash 
-userPassword: $newhashann" >> /etc/openldap/slapd.d/user-ann.ldif
+userPassword: $newhashann
+" >> /etc/openldap/slapd.d/user-ann.ldif
 
 sleep 3
 
@@ -294,7 +296,8 @@ uidNumber: 9998
 gidNumber: 501
 homeDirectory: /home/users/testuser
 loginShell: /bin/bash
-userPassword: $newhashtest" >> /etc/openldap/slapd.d/user-testuser.ldif
+userPassword: $newhashtest
+" >> /etc/openldap/slapd.d/user-testuser.ldif
 
 sleep 3
 
@@ -314,7 +317,8 @@ echo "dn: dc=technerdlove, dc=local
 dc: technerdlove
 o: Tech Nerd Love
 objectclass: organization
-objectclass: dcObject" >> /etc/openldap/slapd.d/organization.ldif
+objectclass: dcObject
+" >> /etc/openldap/slapd.d/organization.ldif
 
 sleep 3
 
@@ -331,7 +335,8 @@ echo "dn: cn=admins,ou=Group,dc=technerdlove,dc=local
 cn: admins
 gidnumber: 500
 objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
-objectclass: top" >> /etc/openldap/slapd.d/group-admins.ldif
+objectclass: top
+" >> /etc/openldap/slapd.d/group-admins.ldif
 
 sleep 3
 
@@ -346,7 +351,8 @@ echo "dn: cn=testers,ou=Group,dc=technerdlove,dc=local
 cn: testers
 gidnumber: 501
 objectclass: posixGroup
-objectclass: top" >> /etc/openldap/slapd.d/group-testers.ldif
+objectclass: top
+" >> /etc/openldap/slapd.d/group-testers.ldif
 
 sleep 3
 
@@ -371,7 +377,8 @@ memberuid: testuser
 dn: cn=testers,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
-memberuid: testuser" >> /etc/openldap/slapd.d/add-defaultuserstogroups.ldif
+memberuid: testuser
+" >> /etc/openldap/slapd.d/add-defaultuserstogroups.ldif
 
 sleep 3
 
