@@ -112,7 +112,8 @@ olcRootDN: cn=Manager,dc=technerdlove,dc=local
 dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 replace: olcRootPW
-olcRootPW: $newhash" > /etc/openldap/slapd.d/config.ldif
+olcRootPW: $newhash
+" > /etc/openldap/slapd.d/config.ldif
 
 #      Set the owner and group permissions to ldap.
 chown -R ldap:ldap /etc/openldap/slapd.d/config.ldif
@@ -149,7 +150,8 @@ olcTLSCertificateFile: /etc/openldap/certs/technerdloveldapcert.pem
 dn: cn=config
 changetype: modify
 replace: olcTLSCertificateKeyFile
-olcTLSCertificateKeyFile: /etc/openldap/certs/technerdloveldapkey.pem" > /etc/openldap/slapd.d/certs.ldif
+olcTLSCertificateKeyFile: /etc/openldap/certs/technerdloveldapkey.pem
+" > /etc/openldap/slapd.d/certs.ldif
 
 #      Import the configurations to LDAP server.
 ldapmodify -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/slapd.d/certs.ldif
