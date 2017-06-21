@@ -90,8 +90,8 @@ newsecret=$(slappasswd -g)
 newhash=$(slappasswd -s "$newsecret")
 echo -n "$newsecret" > /root/ldap_admin_pass
 #echo -n "$newhash" > /root/ldap_admin_pass
-#chmod 600 /root/ldap_admin_pass
-chmod 755 /root/ldap_admin_pass
+chmod 600 /root/ldap_admin_pass
+#chmod 755 /root/ldap_admin_pass
 
 # 2-A-ii. Configure OpenLDAP server and store in config.ldif
 #         Reference config.ldif
@@ -208,8 +208,8 @@ newsecretann=$(slappasswd -g)
 newhashann=$(slappasswd -s "$newsecretann")
 echo -n "$newsecretann" > /root/ldap_user_pass_ann
 #echo -n "$newhashann" > /root/ldap_user_pass_ann
-#chmod 600 /root/ldap_user_pass_ann
-chmod 755 /root/ldap_user_pass_ann
+chmod 600 /root/ldap_user_pass_ann
+#chmod 755 /root/ldap_user_pass_ann
 
 echo "Creating LDAP user ann and user-ann.ldif..."
 #        Call user-ann.ldif
@@ -264,8 +264,8 @@ newsecrettest=$(slappasswd -g)
 newhashtest=$(slappasswd -s "$newsecrettest")
 echo -n "$newsecrettest" > /root/ldap_user_pass_test
 #echo -n "$newhashtest" > /root/ldap_user_pass_test
-#chmod 600 /root/ldap_user_pass_test
-chmod 755 /root/ldap_user_pass_test
+chmod 600 /root/ldap_user_pass_test
+#chmod 755 /root/ldap_user_pass_test
 
 
 echo "Creating LDAP user testuser and user-testuser.ldif..."
