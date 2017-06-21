@@ -88,9 +88,10 @@ echo "generate new hashed password for ldap root user and store it on the server
 #       generate and securely store a new pw.
 newsecret=$(slappasswd -g)
 newhash=$(slappasswd -s "$newsecret")
-#echo -n "$newsecret" > /root/ldap_admin_pass
-echo -n "$newhash" > /root/ldap_admin_pass
-chmod 600 /root/ldap_admin_pass
+echo -n "$newsecret" > /root/ldap_admin_pass
+#echo -n "$newhash" > /root/ldap_admin_pass
+#chmod 600 /root/ldap_admin_pass
+chmod 755 /root/ldap_admin_pass
 
 # 2-A-ii. Configure OpenLDAP server and store in config.ldif
 #         Reference config.ldif
@@ -205,9 +206,10 @@ echo "generate new hashed password for ldap user ann and store it on the server.
 #       generate and securely store a new pw.
 newsecretann=$(slappasswd -g)
 newhashann=$(slappasswd -s "$newsecretann")
-#echo -n "$newsecretann" > /root/ldap_user_pass_ann
-echo -n "$newhashann" > /root/ldap_user_pass_ann
-chmod 600 /root/ldap_user_pass_ann
+echo -n "$newsecretann" > /root/ldap_user_pass_ann
+#echo -n "$newhashann" > /root/ldap_user_pass_ann
+#chmod 600 /root/ldap_user_pass_ann
+chmod 755 /root/ldap_user_pass_ann
 
 echo "Creating LDAP user ann and user-ann.ldif..."
 #        Call user-ann.ldif
@@ -260,9 +262,10 @@ echo "generate new hashed password for ldap user test and store it on the server
 #       generate and securely store a new pw.
 newsecrettest=$(slappasswd -g)
 newhashtest=$(slappasswd -s "$newsecrettest")
-#echo -n "$newsecrettest" > /root/ldap_user_pass_test
-echo -n "$newhashtest" > /root/ldap_user_pass_test
-chmod 600 /root/ldap_user_pass_test
+echo -n "$newsecrettest" > /root/ldap_user_pass_test
+#echo -n "$newhashtest" > /root/ldap_user_pass_test
+#chmod 600 /root/ldap_user_pass_test
+chmod 755 /root/ldap_user_pass_test
 
 
 echo "Creating LDAP user testuser and user-testuser.ldif..."
@@ -454,6 +457,10 @@ sed  -i '/<VirtualHost _default_:443>/a Alias \/phpldapadmin \/usr\/share\/phpld
 sed  -i '/Alias \/phpldapadmin \/usr\/share\/phpldapadmin\/htdocs/a Alias \/ldapadmin \/usr\/share\/phpldapadmin\/htdocs' /etc/httpd/conf.d/ssl.conf
 sed  -i '/Alias \/ldapadmin \/usr\/share\/phpldapadmin\/htdocs/a DocumentRoot \"\/usr\/share\/phpldapadmin\/htdocs\"' /etc/httpd/conf.d/ssl.conf
 sed  -i '/DocumentRoot \"\/usr\/share\/phpldapadmin\/htdocs\"/a ServerName technerdlove.local:443' /etc/httpd/conf.d/ssl.conf
+
+#         BEGIN The following cipher code is from the following sources:
+#         https://cipherli.st/
+#         and https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html
 
 #         update cypher suite
 sed -i "s/SSLProtocol all -SSLv2/#SSLProtocol all -SSLv2/g" /etc/httpd/conf.d/ssl.conf
