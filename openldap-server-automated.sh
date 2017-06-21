@@ -88,7 +88,8 @@ echo "generate new hashed password for ldap root user and store it on the server
 #       generate and securely store a new pw.
 newsecret=$(slappasswd -g)
 newhash=$(slappasswd -s "$newsecret")
-echo -n "$newsecret" > /root/ldap_admin_pass
+#echo -n "$newsecret" > /root/ldap_admin_pass
+echo -n "$newhash" > /root/ldap_admin_pass
 chmod 600 /root/ldap_admin_pass
 
 # 2-A-ii. Configure OpenLDAP server and store in config.ldif
@@ -204,7 +205,8 @@ echo "generate new hashed password for ldap user ann and store it on the server.
 #       generate and securely store a new pw.
 newsecretann=$(slappasswd -g)
 newhashann=$(slappasswd -s "$newsecretann")
-echo -n "$newsecretann" > /root/ldap_user_pass_ann
+#echo -n "$newsecretann" > /root/ldap_user_pass_ann
+echo -n "$newhashann" > /root/ldap_user_pass_ann
 chmod 600 /root/ldap_user_pass_ann
 
 echo "Creating LDAP user ann and user-ann.ldif..."
@@ -258,7 +260,8 @@ echo "generate new hashed password for ldap user test and store it on the server
 #       generate and securely store a new pw.
 newsecrettest=$(slappasswd -g)
 newhashtest=$(slappasswd -s "$newsecrettest")
-echo -n "$newsecrettest" > /root/ldap_user_pass_test
+#echo -n "$newsecrettest" > /root/ldap_user_pass_test
+echo -n "$newhashtest" > /root/ldap_user_pass_test
 chmod 600 /root/ldap_user_pass_test
 
 
