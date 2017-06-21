@@ -125,7 +125,8 @@ echo "restricting ldap database authorization..."
 echo 'dn: olcDatabase={1}monitor,cn=config
 changetype: modify
 replace: olcAccess
-olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
+#olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
 
 #         Send the configuration to the LDAP server.
 ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/slapd.d/config.ldif
