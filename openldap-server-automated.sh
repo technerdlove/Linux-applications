@@ -199,7 +199,7 @@ ou: Group" >> /etc/openldap/slapd.d/base.ldif
 #           Build the directory structure.
 #           ldapadd command will prompt you for the password of Manager (LDAP root user).
 #ldapadd -x -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/base.ldif -y /root/ldap_admin_pass
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager,dc=technerdlove,dc=local" -f /etc/openldap/slapd.d/base.ldif 
+ldapadd -x -D "cn=Manager,dc=technerdlove,dc=local" -y /root/ldap_admin_pass -f /etc/openldap/slapd.d/base.ldif 
 
 # 2-A-v. Create LDAP users:
 echo "generate new hashed password for ldap user ann and store it on the server..."
@@ -284,7 +284,7 @@ loginShell: /bin/bash
 userPassword: $newhashtest" >> /etc/openldap/slapd.d/user-testuser.ldif
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif -y /root/ldap_admin_pass 
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/user-testuser.ldif  
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/user-testuser.ldif  
 
 sleep 3
 
@@ -302,7 +302,7 @@ objectclass: organization
 objectclass: dcObject" >> /etc/openldap/slapd.d/organization.ldif
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/organization.ldif -y /root/ldap_admin_pass
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/organization.ldif 
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/organization.ldif 
 
 sleep 3
 
@@ -317,7 +317,7 @@ objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to
 objectclass: top" >> /etc/openldap/slapd.d/group-admins.ldif
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif -y /root/ldap_admin_pass
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif 
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-admins.ldif 
 
 sleep 3
 
@@ -330,7 +330,7 @@ objectclass: posixGroup
 objectclass: top" >> /etc/openldap/slapd.d/group-testers.ldif
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif -y /root/ldap_admin_pass
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif 
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-testers.ldif 
 
 sleep 3
 
@@ -354,7 +354,7 @@ memberuid: testuser" >> /etc/openldap/slapd.d/add-defaultuserstogroups.ldif
 
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/add-defaultuserstogroups.ldif -y /root/ldap_admin_pass
-ldapadd -x -y /root/ldap_admin_pass -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/add-defaultuserstogroups.ldif 
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/add-defaultuserstogroups.ldif 
 
 sleep 3
 
