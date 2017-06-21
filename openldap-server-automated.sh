@@ -113,7 +113,7 @@ dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 replace: olcRootPW
 olcRootPW: $newhash
-" > /etc/openldap/slapd.d/config.ldif
+" >> /etc/openldap/slapd.d/config.ldif
 
 #      Set the owner and group permissions to ldap.
 chown -R ldap:ldap /etc/openldap/slapd.d/config.ldif
@@ -126,7 +126,7 @@ echo "restricting ldap database authorization..."
 echo 'dn: olcDatabase={1}monitor,cn=config
 changetype: modify
 replace: olcAccess
-olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=technerdlove,dc=local" read by * none' >> /etc/openldap/slapd.d/config.ldif
 #olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=ldap,dc=technerdlove,dc=local" read by * none' > /etc/openldap/slapd.d/config.ldif
 
 #         Send the configuration to the LDAP server.
