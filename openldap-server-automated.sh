@@ -333,14 +333,14 @@ sleep 3
 
 
 # 2-A-vii: Create Two Groups
-echo "Creating admins group..."
 #          Entry 1: 
 #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
+echo "Creating admins group..."
 echo "dn: cn=admin,ou=Group,dc=technerdlove,dc=local
-cn: admin
-gidnumber: 500
 objectclass: posixGroup  
 objectclass: top
+cn: admin
+gidnumber: 500
 " >> /etc/openldap/slapd.d/group-admin.ldif
 
 sleep 3
@@ -353,10 +353,10 @@ sleep 3
 echo "Creating testers group..."
 #            Entry 2: 
 echo "dn: cn=testers,ou=Group,dc=technerdlove,dc=local
-cn: testers
-gidnumber: 501
 objectclass: posixGroup
 objectclass: top
+cn: testers
+gidnumber: 501
 " >> /etc/openldap/slapd.d/group-testers.ldif
 
 sleep 3
