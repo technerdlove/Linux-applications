@@ -315,21 +315,21 @@ sleep 3
 
 
 # 2-A-vi: Create An organization
-echo "Creating organization..."
+#echo "Creating organization..."
 
-echo "dn: dc=technerdlove, dc=local
-dc: technerdlove
-o: Tech Nerd Love
-objectclass: organization
-objectclass: dcObject
-" >> /etc/openldap/slapd.d/organization.ldif
+#echo "dn: dc=technerdlove, dc=local
+#dc: technerdlove
+#o: Tech Nerd Love
+#objectclass: organization
+#objectclass: dcObject
+#" >> /etc/openldap/slapd.d/organization.ldif
 
-sleep 3
+#sleep 3
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/organization.ldif -y /root/ldap_admin_pass
-ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/organization.ldif 
+#ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/organization.ldif 
 
-sleep 3
+#sleep 3
 
 
 # 2-A-vii: Create Two Groups
