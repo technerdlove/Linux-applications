@@ -223,7 +223,7 @@ gidnumber: 500
 sleep 3
 
 #ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif -y /root/ldap_admin_pass
-ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-owners.ldif 
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-admin.ldif 
 
 sleep 3
 
