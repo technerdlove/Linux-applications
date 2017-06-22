@@ -208,7 +208,43 @@ ldapadd -x -D "cn=Manager,dc=technerdlove,dc=local" -y /root/ldap_admin_pass -f 
 
 sleep 3
 
-# 2-A-v. Create LDAP users:
+
+# 2-A-v: Create Two Groups
+#          Entry 1: 
+#posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
+echo "Creating admin group..."
+echo "dn: cn=admin,ou=Group,dc=technerdlove,dc=local
+objectclass: posixGroup  
+objectclass: top
+cn: admin
+gidnumber: 500
+" >> /etc/openldap/slapd.d/group-admin.ldif
+
+sleep 3
+
+#ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif -y /root/ldap_admin_pass
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-owners.ldif 
+
+sleep 3
+
+echo "Creating testers group..."
+#            Entry 2: 
+echo "dn: cn=testers,ou=Group,dc=technerdlove,dc=local
+objectclass: posixGroup
+objectclass: top
+cn: testers
+gidnumber: 501
+" >> /etc/openldap/slapd.d/group-testers.ldif
+
+sleep 3
+
+#ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif -y /root/ldap_admin_pass
+ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-testers.ldif 
+
+sleep 3
+
+
+# 2-A-vi. Create LDAP users:
 echo "generate new hashed password for ldap user ann and store it on the server..."
 #       generate and securely store a new pw.
 newsecretann=$(slappasswd -g)
@@ -331,40 +367,6 @@ sleep 3
 
 #sleep 3
 
-
-# 2-A-vii: Create Two Groups
-#          Entry 1: 
-#posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
-echo "Creating owners group..."
-echo "dn: cn=owners,ou=Group,dc=technerdlove,dc=local
-objectclass: posixGroup  
-objectclass: top
-cn: owners
-gidnumber: 500
-" >> /etc/openldap/slapd.d/group-owners.ldif
-
-sleep 3
-
-#ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-admins.ldif -y /root/ldap_admin_pass
-ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-owners.ldif 
-
-sleep 3
-
-echo "Creating testers group..."
-#            Entry 2: 
-echo "dn: cn=testers,ou=Group,dc=technerdlove,dc=local
-objectclass: posixGroup
-objectclass: top
-cn: testers
-gidnumber: 501
-" >> /etc/openldap/slapd.d/group-testers.ldif
-
-sleep 3
-
-#ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -f  /etc/openldap/slapd.d/group-testers.ldif -y /root/ldap_admin_pass
-ldapadd -x -D "cn=Manager, dc=technerdlove, dc=local" -y /root/ldap_admin_pass -f  /etc/openldap/slapd.d/group-testers.ldif 
-
-sleep 3
 
 #            IS THIS NECESSARY?
 echo "Assigning users to groups..."
