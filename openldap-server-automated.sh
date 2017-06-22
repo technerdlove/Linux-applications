@@ -230,6 +230,7 @@ objectClass: top
 objectClass: posixAccount
 objectclass: inetOrgPerson
 cn: anntechnerd
+sn: nerd
 uid: ann
 uidNumber: 9999
 gidNumber: 500
@@ -292,7 +293,8 @@ echo "dn: uid=testuser,ou=People,dc=technerdlove,dc=local
 objectClass: top
 objectClass: posixAccount
 objectclass: inetOrgPerson
-cn: Testuser
+cn: testy
+sn: tester
 uid: testuser
 uidNumber: 9998
 gidNumber: 501
@@ -333,10 +335,11 @@ sleep 3
 # 2-A-vii: Create Two Groups
 echo "Creating admins group..."
 #          Entry 1: 
+#posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
 echo "dn: cn=admins,ou=Group,dc=technerdlove,dc=local
 cn: admins
 gidnumber: 500
-objectclass: posixGroup  #posixAccount is common objectClass within LDAP used to represent user entries which typically is used for for PAM and Linux/Unix Authentication.
+objectclass: posixGroup  
 objectclass: top
 " >> /etc/openldap/slapd.d/group-admins.ldif
 
