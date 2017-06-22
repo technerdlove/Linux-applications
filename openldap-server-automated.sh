@@ -369,12 +369,12 @@ sleep 3
 #            IS THIS NECESSARY?
 echo "Assigning users to groups..."
 
-echo "dn: cn=admins,ou=Group,dc=technerdlove,dc=local
+echo "dn: cn=admin,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
 memberuid: ann
 
-dn: cn=admins,ou=Group,dc=technerdlove,dc=local
+dn: cn=admin,ou=Group,dc=technerdlove,dc=local
 changetype: modify
 add: memberuid
 memberuid: testuser
